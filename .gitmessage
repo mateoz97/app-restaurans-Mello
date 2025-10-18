@@ -1,0 +1,28 @@
+# <tipo>: <descripción corta>
+# |<----  Máximo 50 caracteres  ---->|
+
+# Explicación detallada del cambio (opcional)
+# |<----   Máximo 72 caracteres por línea   ---->|
+
+# --- TIPOS DE COMMIT ---
+# feat:     Nueva funcionalidad
+# fix:      Corrección de bug
+# docs:     Cambios en documentación
+# style:    Formato, punto y coma faltantes, etc (sin cambios de código)
+# refactor: Refactorización de código
+# perf:     Mejoras de rendimiento
+# test:     Agregar o modificar tests
+# chore:    Cambios en el proceso de build o herramientas auxiliares
+# revert:   Revertir un commit anterior
+
+# --- EJEMPLOS ---
+# feat: Agregar pantalla de reportes mensuales
+# fix: Corregir cálculo de ingresos en dashboard
+# docs: Actualizar README con instrucciones de deploy
+# refactor: Simplificar lógica de permisos en AuthContext
+# perf: Optimizar queries de órdenes en DataContext
+
+# --- FOOTER (opcional) ---
+# Closes #123
+# Refs #456
+# Breaking change: Descripción del cambio que rompe compatibilidad
