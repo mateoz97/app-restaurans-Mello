@@ -19,6 +19,7 @@ interface DataContextType {
   refreshInventory: () => Promise<void>;
   refreshMenuItems: () => Promise<void>;
   addOrder: (order: any) => Promise<void>;
+  updateOrder: (orderId: string, order: Order) => Promise<void>;
   updateOrderStatus: (orderId: string, status: OrderStatus) => Promise<void>;
   deleteOrder: (orderId: string) => Promise<void>;
   updateInventoryItem: (item: InventoryItem) => Promise<void>;
@@ -108,6 +109,19 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const updateOrder = async (orderId: string, order: Order) => {
+    try {
+      // Por ahora actualizamos localmente
+      // Cuando tengamos backend, usar: await ordersAPI.update(orderId, order);
+      setOrders(prevOrders =>
+        prevOrders.map(o => (o.id === orderId ? { ...order, updatedAt: new Date() } : o))
+      );
+    } catch (error: any) {
+      console.error('Error updating order:', error.response?.data || error.message);
+      throw error;
+    }
+  };
+
   const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
     try {
       await ordersAPI.updateStatus(orderId, status);
@@ -158,6 +172,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         refreshInventory,
         refreshMenuItems,
         addOrder,
+        updateOrder,
         updateOrderStatus,
         deleteOrder,
         updateInventoryItem,

@@ -32,6 +32,8 @@ export type Permission =
 
 // Order Types
 export type OrderStatus = 'pending' | 'preparing' | 'ready' | 'delivered' | 'cancelled';
+export type OrderType = 'dine-in' | 'takeaway';
+export type PaymentStatus = 'paid' | 'pending';
 
 export interface OrderItem {
   id: string;
@@ -43,9 +45,11 @@ export interface OrderItem {
 
 export interface Order {
   id: string;
-  tableNumber: number;
+  tableNumber?: number;  // Opcional para pedidos para llevar
   items: OrderItem[];
   status: OrderStatus;
+  orderType: OrderType;
+  paymentStatus: PaymentStatus;
   total: number;
   createdAt: Date;
   createdBy: string;
