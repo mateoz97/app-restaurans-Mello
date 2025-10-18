@@ -22,7 +22,9 @@ interface DataContextType {
   updateOrder: (orderId: string, order: Order) => Promise<void>;
   updateOrderStatus: (orderId: string, status: OrderStatus) => Promise<void>;
   deleteOrder: (orderId: string) => Promise<void>;
+  addInventoryItem: (item: Omit<InventoryItem, 'id' | 'lastUpdated'>) => Promise<void>;
   updateInventoryItem: (item: InventoryItem) => Promise<void>;
+  deleteInventoryItem: (itemId: string) => Promise<void>;
   getLowStockItems: () => InventoryItem[];
 }
 
@@ -142,17 +144,42 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const addInventoryItem = async (item: Omit<InventoryItem, 'id' | 'lastUpdated'>) => {
+    try {
+      // Por ahora agregamos localmente
+      // Cuando tengamos backend, usar: await inventoryAPI.create(item);
+      const newItem: InventoryItem = {
+        ...item,
+        id: Date.now().toString(),
+        lastUpdated: new Date(),
+      };
+      setInventory(prevInventory => [...prevInventory, newItem]);
+    } catch (error: any) {
+      console.error('Error adding inventory item:', error.response?.data || error.message);
+      throw error;
+    }
+  };
+
   const updateInventoryItem = async (item: InventoryItem) => {
     try {
-      await inventoryAPI.update(item.id, {
-        quantity: item.quantity,
-        price: item.price,
-        min_stock: item.minStock,
-        supplier: item.supplier
-      });
-      await refreshInventory();
+      // Por ahora actualizamos localmente
+      // Cuando tengamos backend, usar: await inventoryAPI.update(item.id, item);
+      setInventory(prevInventory =>
+        prevInventory.map(i => (i.id === item.id ? { ...item, lastUpdated: new Date() } : i))
+      );
     } catch (error: any) {
       console.error('Error updating inventory:', error.response?.data || error.message);
+      throw error;
+    }
+  };
+
+  const deleteInventoryItem = async (itemId: string) => {
+    try {
+      // Por ahora eliminamos localmente
+      // Cuando tengamos backend, usar: await inventoryAPI.delete(itemId);
+      setInventory(prevInventory => prevInventory.filter(item => item.id !== itemId));
+    } catch (error: any) {
+      console.error('Error deleting inventory item:', error.response?.data || error.message);
       throw error;
     }
   };
@@ -175,7 +202,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updateOrder,
         updateOrderStatus,
         deleteOrder,
+        addInventoryItem,
         updateInventoryItem,
+        deleteInventoryItem,
         getLowStockItems,
       }}
     >
