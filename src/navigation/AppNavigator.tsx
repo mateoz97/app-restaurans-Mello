@@ -29,7 +29,7 @@ function MainTabs() {
           paddingTop: 5,
           height: 60,
         },
-        headerShown: true,
+        headerShown: false,
       }}
     >
       {hasPermission('view_dashboard') && (
