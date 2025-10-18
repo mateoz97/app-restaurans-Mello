@@ -21,19 +21,14 @@ export default function InventoryScreen() {
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [filterCategory, setFilterCategory] = useState<InventoryCategory | 'all'>('all');
 
   const canEdit = hasPermission('edit_inventory');
   const canView = hasPermission('view_inventory');
 
-  // Filtrar y ordenar inventario
+  // Ordenar inventario alfabéticamente
   const sortedInventory = useMemo(() => {
-    const filtered = filterCategory === 'all'
-      ? inventory
-      : inventory.filter(item => item.category === filterCategory);
-
-    return [...filtered].sort((a, b) => a.name.localeCompare(b.name));
-  }, [inventory, filterCategory]);
+    return [...inventory].sort((a, b) => a.name.localeCompare(b.name));
+  }, [inventory]);
 
   const getCategoryLabel = (category: InventoryCategory) => {
     const labels: Record<InventoryCategory, string> = {
@@ -89,28 +84,6 @@ export default function InventoryScreen() {
           </TouchableOpacity>
         )}
       </View>
-
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
-        {['all', 'food', 'beverages', 'supplies', 'other'].map(category => (
-          <TouchableOpacity
-            key={category}
-            style={[
-              styles.filterButton,
-              filterCategory === category && styles.filterButtonActive,
-            ]}
-            onPress={() => setFilterCategory(category as InventoryCategory | 'all')}
-          >
-            <Text
-              style={[
-                styles.filterButtonText,
-                filterCategory === category && styles.filterButtonTextActive,
-              ]}
-            >
-              {category === 'all' ? 'Todos' : getCategoryLabel(category as InventoryCategory)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
 
       {/* Vista tipo Tabla */}
       <ScrollView style={styles.tableContainer}>
@@ -648,30 +621,6 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: 'white',
     fontWeight: '600',
-  },
-  filterContainer: {
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-  },
-  filterButton: {
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-    marginRight: 10,
-  },
-  filterButtonActive: {
-    backgroundColor: '#007AFF',
-  },
-  filterButtonText: {
-    color: '#666',
-    fontWeight: '500',
-  },
-  filterButtonTextActive: {
-    color: 'white',
   },
   tableContainer: {
     flex: 1,

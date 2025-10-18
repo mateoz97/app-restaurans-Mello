@@ -22,7 +22,6 @@ export default function OrdersScreen() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showNewOrderModal, setShowNewOrderModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [filterStatus, setFilterStatus] = useState<OrderStatus | 'all'>('all');
 
   const canCreateOrder = hasPermission('create_order');
   const canEditOrder = hasPermission('edit_order');
@@ -30,14 +29,10 @@ export default function OrdersScreen() {
 
   // Ordenar por fecha de creación (orden de llegada)
   const sortedOrders = useMemo(() => {
-    const filtered = filterStatus === 'all'
-      ? orders
-      : orders.filter(order => order.status === filterStatus);
-
-    return [...filtered].sort((a, b) =>
+    return [...orders].sort((a, b) =>
       new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     );
-  }, [orders, filterStatus]);
+  }, [orders]);
 
   const getStatusLabel = (status: OrderStatus) => {
     const labels: Record<OrderStatus, string> = {
@@ -113,28 +108,6 @@ export default function OrdersScreen() {
           </TouchableOpacity>
         )}
       </View>
-
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
-        {['all', 'pending', 'preparing', 'ready', 'delivered', 'cancelled'].map(status => (
-          <TouchableOpacity
-            key={status}
-            style={[
-              styles.filterButton,
-              filterStatus === status && styles.filterButtonActive,
-            ]}
-            onPress={() => setFilterStatus(status as OrderStatus | 'all')}
-          >
-            <Text
-              style={[
-                styles.filterButtonText,
-                filterStatus === status && styles.filterButtonTextActive,
-              ]}
-            >
-              {status === 'all' ? 'Todas' : getStatusLabel(status as OrderStatus)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
 
       {/* Vista tipo Tabla */}
       <ScrollView style={styles.tableContainer}>
@@ -753,30 +726,6 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: 'white',
     fontWeight: '600',
-  },
-  filterContainer: {
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-  },
-  filterButton: {
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-    marginRight: 10,
-  },
-  filterButtonActive: {
-    backgroundColor: '#007AFF',
-  },
-  filterButtonText: {
-    color: '#666',
-    fontWeight: '500',
-  },
-  filterButtonTextActive: {
-    color: 'white',
   },
   tableContainer: {
     flex: 1,
